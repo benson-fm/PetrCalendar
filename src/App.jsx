@@ -27,7 +27,7 @@ export default function App() {
             <div className="card-body">
                 <h2 className="card-title justify-around">Petr Calendar</h2>
                 <p className="text-center align-middle">Insert your image below!</p>
-                <button className="btn btn-primary">Download</button>
+                <button className="btn btn-primary">Download Button</button>
                 <input type="file" className="file-input file-input-bordered w-full max-w-xs" onChange={handleChange}/>
             </div>
             <AdvancedImage cldImg={img}/>
