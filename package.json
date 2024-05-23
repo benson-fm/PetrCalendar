@@ -10,8 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@cloudinary/react": "^1.13.0",
-    "@cloudinary/url-gen": "^1.19.0",
+    "axios": "^1.6.8",
+    "date-and-time": "^3.2.0",
+    "ics": "^3.7.2",
+    "ocr-space-api-wrapper": "^2.3.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
