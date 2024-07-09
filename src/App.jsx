@@ -8,6 +8,7 @@ export default function App() {
   const [data, setData] = useState(null);
   let [baseDay, setBaseDay] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [events, setEvents] = useState(null);
 
   // values for the start of the quarter
   const dates = [
@@ -25,9 +26,6 @@ export default function App() {
     try {
       const now = new Date();
       date.format(now, "ddd, MMM DD YYYY");
-      console.log(now.getDay());
-
-      console.log(file);
       const formData = new FormData();
 
       formData.append("file", file);
@@ -45,22 +43,19 @@ export default function App() {
         }
       );
 
-      console.log(response.data["ParsedResults"][0]["TextOverlay"]["Lines"]);
       setData(response.data["ParsedResults"][0]["TextOverlay"]["Lines"]);
-      console.log("finished");
+
       fetchFile();
     } catch (error) {
       console.error(error);
       setLoading(false);
     }
-
     setLoading(false);
   };
 
   const fetchFile = async () => {
     setLoading(true);
     try {
-      // I would get the day that user is doing this on
       const now = new Date();
 
       for (let i = 0; i < dates.length; i++) {
@@ -73,32 +68,35 @@ export default function App() {
       if (baseDay === null) {
         setBaseDay(dates[dates.length - 1]);
       }
-
+      
+      console.log(data);
       const weekNumber = parseInt(data[0]["LineText"].split(" ")[1]);
 
       let curDate = date.addDays(baseDay, weekNumber * 7);
-
       for (let i = 0; i < 5; i++) {
         // add events function
         curDate = date.addDays(curDate, 1);
       }
 
-      console.log(curDate);
-      console.log(data[1]["Words"]["length"]);
       formatDaysToEvents();
-    } catch {
-      console.log("error");
+    } catch (error) {
+      console.log(error);
+
     }
   };
 
+  useEffect(() => {
+    if (data) {
+      console.log(data);
+    }
+  }, [data]);
+
   const formatDaysToEvents = () => {
-    // format the data to make it where each day has their corresponding
-    // use i = 1 to skip the week number
     let events = new Map();
     let day = "";
     let content = [];
 
-    for (let i = 1; i < data.length; ++i) {
+    for (let i = 0; i < data.length; i++) {
       if (data[i]["Words"]["length"] === 1) {
         if (day !== "") {
           events.set(day, content);
@@ -111,9 +109,13 @@ export default function App() {
         content.push(data[i]["LineText"]);
       }
     }
+    events.set(day, content);
 
-    console.log(events);
+    setEvents(events);
+    console.log("success");
   };
+
+
 
   if (loading) {
     return <p>Loading...</p>;
