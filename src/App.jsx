@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { createEvent } from "ics";
 import date from "date-and-time";
 import axios from "axios";
@@ -11,11 +11,11 @@ export default function App() {
   const [events, setEvents] = useState(null);
 
   // values for the start of the quarter
-  const dates = [
+  const dates = useMemo(() => [
     new Date(2023, 8, 28),
     new Date(2024, 0, 8),
     new Date(2024, 3, 1),
-  ];
+  ], []);
 
   const handleUpload = (e) => {
     setFile(e.target.files[0]);
@@ -53,23 +53,26 @@ export default function App() {
     setLoading(false);
   };
 
-  const fetchFile = async () => {
+  const fetchFile = useCallback(async () => {
     setLoading(true);
+
     try {
       const now = new Date();
 
+      let selectedBaseDay = null;
       for (let i = 0; i < dates.length; i++) {
         if (!(now > dates[i])) {
-          setBaseDay(dates[i]);
+          selectedBaseDay = dates[i];
           break;
         }
       }
 
-      if (baseDay === null) {
-        setBaseDay(dates[dates.length - 1]);
+      if (selectedBaseDay === null) {
+        selectedBaseDay = dates[dates.length - 1];
       }
-      
-      console.log(data);
+
+      setBaseDay(selectedBaseDay);
+
       const weekNumber = parseInt(data[0]["LineText"].split(" ")[1]);
 
       let curDate = date.addDays(baseDay, weekNumber * 7);
@@ -78,44 +81,41 @@ export default function App() {
         curDate = date.addDays(curDate, 1);
       }
 
-      formatDaysToEvents();
+      let events = new Map();
+      let day = "";
+      let content = [];
+
+      for (let i = 0; i < data.length; i++) {
+        if (data[i]["Words"]["length"] === 1) {
+          if (day !== "") {
+            events.set(day, content);
+            day = "";
+            content = [];
+          }
+
+          day = data[i]["LineText"];
+        } else {
+          content.push(data[i]["LineText"]);
+        }
+      }
+      events.set(day, content);
+
+      setEvents(events);
+      console.log("success");
+      setLoading(false);
     } catch (error) {
       console.log(error);
-
     }
-  };
+  }, [data, baseDay, dates]);
+
+
 
   useEffect(() => {
     if (data) {
       console.log(data);
+      fetchFile();
     }
-  }, [data]);
-
-  const formatDaysToEvents = () => {
-    let events = new Map();
-    let day = "";
-    let content = [];
-
-    for (let i = 0; i < data.length; i++) {
-      if (data[i]["Words"]["length"] === 1) {
-        if (day !== "") {
-          events.set(day, content);
-          day = "";
-          content = [];
-        }
-
-        day = data[i]["LineText"];
-      } else {
-        content.push(data[i]["LineText"]);
-      }
-    }
-    events.set(day, content);
-
-    setEvents(events);
-    console.log("success");
-  };
-
-
+  }, [data, fetchFile]);
 
   if (loading) {
     return <p>Loading...</p>;
