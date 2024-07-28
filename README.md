@@ -1,24 +1,51 @@
-# PetrCalendar ( IN-PROGRESS )
+# Image Uploader Boilerplate
 
-### An OCR-powered tool that converts Weekly Petr Drop Announcements into ICS files
+A template of a file uploader providing the solid foundations for any application that requires the use of a fullstack application with uploading files
 
-## Built with:
-<div align="center">
+## Built With
+
+<div align='center'>
   
-  ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
-  ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
-  ![DaisyUI](https://img.shields.io/badge/daisyui-5A0EF8?style=for-the-badge&logo=daisyui&logoColor=white)
   ![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
+  ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+  ![React Query](https://img.shields.io/badge/-React%20Query-FF4154?style=for-the-badge&logo=react%20query&logoColor=white)
+  ![Express.js](https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB)
   ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
-  ![NPM](https://img.shields.io/badge/NPM-%23CB3837.svg?style=for-the-badge&logo=npm&logoColor=white)
+  ![Nodemon](https://img.shields.io/badge/NODEMON-%23323330.svg?style=for-the-badge&logo=nodemon&logoColor=%BBDEAD)
+  ![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+  ![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
+  
 </div>
 
-## Overview
-The University of California, Irvine has built a reputable campus-culture identity centered around "derpier" stickers of its mascot Peter the Anteater with Petr stickers. Petrs are individuals who dress up in costumes to hide their secret identity and drop Petr stickers at specific locations around campus that give a different take on the mascot with pop-culture influences. 
+## Installation 
+Ensure that you have node installed and have downloaded the git repository on your local system, once accomplished, run the following commands in your terminal:
 
-Given the busy livelihood of college students and trying to fit these runs to get a sticker themselves, time conflicts can emerge and the difficulty to go through all Petr accounts and label it within their calendar can be lengthy. 
+```sh
+cd <respository_name>
+```
 
-This is why I built the tool, PetrCalendar. PetrCalendar takes a weekly image as input that's provided by the Petr Community in all the drops that are occurring that week and runs the image through an OCR. The data from that image is then formatted to be in a ICS file format allowing the user to go through a few clicks until they have integrated all the drops and their times within their calendar allowing for efficient planning on Petr drops for students. 
+Followed by this ensure you switch into both the client & server ```cd <client or server>``` then run the following command:
 
+```sh
+npm install
+```
 
-I'm still currently working on the logic to create the ICS files and formatting the data from the OCR!
+This installs the necessary dependencies for the application to work.
+
+You would also want to ensure that you set up a .env file within the client and server directory that holds the port for your server. 
+Using Vite you would want the name of your environment variable to start with VITE for Vite to be able to recognize it. Ensure that this also in your .gitignore.
+
+## Usage
+
+Once you have gone through the installation process you can then run both the client and the server by doing:
+
+```sh
+npm run dev
+```
+
+Ensure that you do this in one terminal where the client is in the scope and another terminal where the server is in scope. This runs both environments being able to have a rendered and operating server and client. You can check the functionality of the server by using postman or a browser and typing ```http://localhost:3000``` and a json containing hello world should appear. 
+
+### Features
+- Drag and Drop File
+
+The file uploads are stored in a local folder called uploads within the server however, general practice is to upload it to a cloud database like AWS S3 but that hasn't been integrated in this template. 
