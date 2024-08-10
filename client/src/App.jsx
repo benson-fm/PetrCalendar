@@ -14,6 +14,7 @@ export default function App() {
 }
 
 function Component() {
+  const [data, setData] = useState(null);
   const [file, setFile] = useState(null);
 
   const mutation = useMutation(
@@ -27,8 +28,9 @@ function Component() {
       }).then((res) => res.json());
     },
     {
-      onSuccess: (data) => {
-        console.log(data);
+      onSuccess: (dataReceived) => {
+        setData(dataReceived.data.ParsedResults[0].TextOverlay["Lines"]);
+        console.log(dataReceived.data.ParsedResults[0].TextOverlay["Lines"]);
       },
       onError: (error) => {
         console.error(error);
@@ -46,15 +48,19 @@ function Component() {
     } else {
       console.error("No file selected");
     }
-
   };
 
   return (
     <div className="flex flex-col w-full h-screen bg-slate-800">
-      <h1 className="text-2xl text-white text-center p-10 font-bold">Upload a file</h1>
+      <h1 className="text-2xl text-white text-center p-10 font-bold">
+        Upload a file
+      </h1>
       <DropZone onFileChange={handleFileChange} />
       <div className="flex justify-center pt-10">
-        <button onClick={uploadFile} className="bg-white h-12 w-24 rounded-md text-blue-500 font-medium hover:bg-blue-500 hover:text-white">
+        <button
+          onClick={uploadFile}
+          className="bg-white h-12 w-24 rounded-md text-blue-500 font-medium hover:bg-blue-500 hover:text-white"
+        >
           Upload
         </button>
       </div>
@@ -62,7 +68,16 @@ function Component() {
       {mutation.isError && (
         <p>Error uploading file: {mutation.error.message}</p>
       )}
-      {mutation.isSuccess && <p>File uploaded successfully</p>}
+      {mutation.isSuccess && (
+        <div>
+          <p>File uploaded successfully</p>
+          <div className="text-white">
+          {data.map((line, index) => (
+              <p key={index}>{line.text}</p>
+          ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
