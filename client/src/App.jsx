@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { QueryClient, QueryClientProvider, useMutation } from "react-query";
+import { QueryClient, QueryClientProvider, useMutation} from "react-query";
 import DropZone from "./components/DropZone";
+import FileUploaded from "./components/FileUploaded";
 
 const queryClient = new QueryClient();
 const serverURL = import.meta.env.VITE_SERVER_URL;
@@ -14,7 +15,7 @@ export default function App() {
 }
 
 function Component() {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
   const [file, setFile] = useState(null);
 
   const mutation = useMutation(
@@ -29,8 +30,8 @@ function Component() {
     },
     {
       onSuccess: (dataReceived) => {
-        setData(dataReceived.data.ParsedResults[0].TextOverlay["Lines"]);
-        console.log(dataReceived.data.ParsedResults[0].TextOverlay["Lines"]);
+        const lines = dataReceived.data.ParsedResults[0].TextOverlay["Lines"];
+        setData(lines);
       },
       onError: (error) => {
         console.error(error);
@@ -40,6 +41,7 @@ function Component() {
 
   const handleFileChange = (file) => {
     setFile(file);
+    
   };
 
   const uploadFile = () => {
@@ -50,33 +52,38 @@ function Component() {
     }
   };
 
+
   return (
     <div className="flex flex-col w-full h-screen bg-slate-800">
-      <h1 className="text-2xl text-white text-center p-10 font-bold">
-        Upload a file
-      </h1>
-      <DropZone onFileChange={handleFileChange} />
-      <div className="flex justify-center pt-10">
-        <button
-          onClick={uploadFile}
-          className="bg-white h-12 w-24 rounded-md text-blue-500 font-medium hover:bg-blue-500 hover:text-white"
-        >
-          Upload
-        </button>
-      </div>
+      {mutation.isIdle && (
+        <>
+          <h1 className="text-2xl text-white text-center p-10 font-bold">
+            Upload a file
+          </h1>
+
+          {file ? <FileUploaded file={file} /> : <DropZone onFileChange={handleFileChange} />}
+          <div className="flex justify-center pt-10">
+            <button
+              onClick={uploadFile}
+              className="bg-white h-12 w-24 rounded-md text-blue-500 font-medium hover:bg-blue-500 hover:text-white"
+            >
+              Upload
+            </button>
+          </div>
+        </>
+      )}
       {mutation.isLoading && <p>Uploading...</p>}
       {mutation.isError && (
         <p>Error uploading file: {mutation.error.message}</p>
       )}
       {mutation.isSuccess && (
-        <div>
-          <p>File uploaded successfully</p>
-          <div className="text-white">
-          {data.map((line, index) => (
-              <p key={index}>{line.text}</p>
-          ))}
+        <>
+          <div>
+            {data.map((line, index) =>{
+              return <p key={index} className="text-white">{line.LineText}</p>
+})}
           </div>
-        </div>
+        </>
       )}
     </div>
   );
